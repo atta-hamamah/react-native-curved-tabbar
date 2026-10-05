@@ -1,0 +1,47 @@
+{
+  "name": "react-native-curved-tabbar",
+  "version": "1.0.0",
+  "description": "A customizable curved bottom tab bar for React Navigation with a floating center notch button, ambient glow, and sparkles.",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "react-native": "src/index.ts",
+  "source": "src/index.ts",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "react-native",
+    "react-navigation",
+    "bottom-tabs",
+    "curved-tabbar",
+    "tabbar",
+    "notch",
+    "fab",
+    "svg"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@react-navigation/bottom-tabs": ">=6.0.0",
+    "@react-navigation/native": ">=6.0.0",
+    "react": "*",
+    "react-native": "*",
+    "react-native-safe-area-context": ">=3.0.0",
+    "react-native-svg": ">=12.0.0"
+  },
+  "devDependencies": {
+    "@react-navigation/bottom-tabs": "^7.20.0",
+    "@react-navigation/native": "^7.5.0",
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.72.0",
+    "react-native": "^0.86.3",
+    "react-native-safe-area-context": "^5.10.1",
+    "react-native-svg": "^15.15.5",
+    "typescript": "^5.0.0"
+  }
+}
