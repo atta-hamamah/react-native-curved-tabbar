@@ -1,7 +1,7 @@
-# react-native-curved-tabbar
+# @atta-hamamah/react-native-curved-tabbar
 
-[![npm](https://img.shields.io/npm/v/react-native-curved-tabbar.svg)](https://www.npmjs.com/package/react-native-curved-tabbar)
-[![license](https://img.shields.io/npm/l/react-native-curved-tabbar.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@atta-hamamah/react-native-curved-tabbar.svg)](https://www.npmjs.com/package/@atta-hamamah/react-native-curved-tabbar)
+[![license](https://img.shields.io/npm/l/@atta-hamamah/react-native-curved-tabbar.svg)](LICENSE)
 
 A curved bottom tab bar for [React Navigation](https://reactnavigation.org) with a notched, floating center button, ambient glow and animated sparkles.
 
@@ -24,7 +24,7 @@ One line to use. Every part can be customized when you need it.
 ## Installation
 
 ```sh
-npm install react-native-curved-tabbar
+npm install @atta-hamamah/react-native-curved-tabbar
 ```
 
 It needs `react-native-svg` and React Navigation's bottom tabs. Skip any you already have:
@@ -41,7 +41,7 @@ Pass `CurvedTabBar` as the navigator's `tabBar`:
 
 ```tsx
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { CurvedTabBar } from 'react-native-curved-tabbar';
+import { CurvedTabBar } from '@atta-hamamah/react-native-curved-tabbar';
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -215,7 +215,7 @@ function OffersScreen() {
 When the props aren't enough, replace parts of the bar. Each render function receives everything the default implementation uses.
 
 ```tsx
-import { CurvedBackground, TabBarItem } from 'react-native-curved-tabbar';
+import { CurvedBackground, TabBarItem } from '@atta-hamamah/react-native-curved-tabbar';
 
 <CurvedTabBar
   {...props}

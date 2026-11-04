@@ -13,7 +13,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator, useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { CurvedTabBar, type TabBarThemeName } from 'react-native-curved-tabbar';
+import { CurvedTabBar, type TabBarThemeName } from '@atta-hamamah/react-native-curved-tabbar';
 import { StatusBar } from 'expo-status-bar';
 
 const Tab = createBottomTabNavigator();

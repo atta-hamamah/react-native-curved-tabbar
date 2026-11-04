@@ -26,7 +26,7 @@ config.resolver.nodeModulesPaths = [path.join(projectRoot, 'node_modules')];
 const librarySource = path.join(libraryRoot, 'src', 'index.ts');
 const upstreamResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (moduleName === 'react-native-curved-tabbar') {
+  if (moduleName === '@atta-hamamah/react-native-curved-tabbar') {
     return { type: 'sourceFile', filePath: librarySource };
   }
   return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);

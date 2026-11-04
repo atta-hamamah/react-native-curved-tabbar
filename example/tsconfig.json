@@ -5,7 +5,7 @@
     // Type-check against the library source, with its peer dependencies taken from this
     // app (same idea as metro.config.js), so there is only one copy of each type.
     "paths": {
-      "react-native-curved-tabbar": ["../src/index.ts"],
+      "@atta-hamamah/react-native-curved-tabbar": ["../src/index.ts"],
       "react": ["./node_modules/@types/react"],
       "react/*": ["./node_modules/@types/react/*"],
       "react-native": ["./node_modules/react-native"],

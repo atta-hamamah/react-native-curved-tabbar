@@ -1,5 +1,5 @@
 {
-  "name": "react-native-curved-tabbar",
+  "name": "@atta-hamamah/react-native-curved-tabbar",
   "version": "0.1.0",
   "description": "Curved bottom tab bar for React Navigation with a notched floating center button, ambient glow and sparkles. One line to use, fully customizable when you need it.",
   "main": "lib/index.js",
@@ -40,6 +40,9 @@
   },
   "author": "atta-hamamah (https://github.com/atta-hamamah)",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@react-navigation/bottom-tabs": ">=6.0.0",
     "@react-navigation/native": ">=6.0.0",

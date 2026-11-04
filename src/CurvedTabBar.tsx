@@ -34,7 +34,7 @@ const isDev = typeof __DEV__ !== 'undefined' && __DEV__;
 function warnOnce(message: string) {
   if (!isDev || warned.has(message)) return;
   warned.add(message);
-  console.warn(`[react-native-curved-tabbar] ${message}`);
+  console.warn(`[@atta-hamamah/react-native-curved-tabbar] ${message}`);
 }
 
 function useKeyboardVisible(enabled: boolean): boolean {
