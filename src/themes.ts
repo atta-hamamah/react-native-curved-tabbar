@@ -1,54 +1,68 @@
-import { TabBarTheme, TabBarPresetTheme } from './types';
+import type { TabBarColors, TabBarThemeName } from './types';
 
-export const THEMES: Record<TabBarPresetTheme, TabBarTheme> = {
-  default: {
-    barColor: '#FFFFFF',
-    shadowColor: '#33B8D2',
-    centerButtonActiveColor: '#0072BB',
-    centerButtonInactiveColor: '#86A8BC',
-    activeTintColor: '#0072BB',
-    inactiveTintColor: '#86A8BC',
-    badgeBackgroundColor: '#FF6600',
-    badgeTextColor: '#FFFFFF',
-  },
+export const THEMES: Record<TabBarThemeName, TabBarColors> = {
   ocean: {
-    barColor: '#FFFFFF',
-    shadowColor: '#33B8D2',
-    centerButtonActiveColor: '#0072BB',
-    centerButtonInactiveColor: '#86A8BC',
-    activeTintColor: '#0072BB',
-    inactiveTintColor: '#86A8BC',
-    badgeBackgroundColor: '#FF6600',
-    badgeTextColor: '#FFFFFF',
+    bar: '#FFFFFF',
+    glow: '#33B8D2',
+    active: '#0072BB',
+    inactive: '#86A8BC',
+    centerActive: '#0072BB',
+    centerInactive: '#86A8BC',
+    centerIcon: '#FFFFFF',
+    badge: '#FF6600',
+    badgeText: '#FFFFFF',
+    sparkle: '#FFD700',
   },
   dark: {
-    barColor: '#12121A',
-    shadowColor: '#A855F7',
-    centerButtonActiveColor: '#EC4899',
-    centerButtonInactiveColor: '#6B7280',
-    activeTintColor: '#EC4899',
-    inactiveTintColor: '#6B7280',
-    badgeBackgroundColor: '#EF4444',
-    badgeTextColor: '#FFFFFF',
+    bar: '#12121A',
+    glow: '#A855F7',
+    active: '#EC4899',
+    inactive: '#6B7280',
+    centerActive: '#EC4899',
+    centerInactive: '#6B7280',
+    centerIcon: '#FFFFFF',
+    badge: '#EF4444',
+    badgeText: '#FFFFFF',
+    sparkle: '#FFD700',
   },
   emerald: {
-    barColor: '#FFFFFF',
-    shadowColor: '#10B981',
-    centerButtonActiveColor: '#059669',
-    centerButtonInactiveColor: '#9CA3AF',
-    activeTintColor: '#059669',
-    inactiveTintColor: '#9CA3AF',
-    badgeBackgroundColor: '#F59E0B',
-    badgeTextColor: '#FFFFFF',
+    bar: '#FFFFFF',
+    glow: '#10B981',
+    active: '#059669',
+    inactive: '#9CA3AF',
+    centerActive: '#059669',
+    centerInactive: '#9CA3AF',
+    centerIcon: '#FFFFFF',
+    badge: '#F59E0B',
+    badgeText: '#FFFFFF',
+    sparkle: '#FFD700',
   },
   sunset: {
-    barColor: '#FFFFFF',
-    shadowColor: '#FB923C',
-    centerButtonActiveColor: '#EA580C',
-    centerButtonInactiveColor: '#9CA3AF',
-    activeTintColor: '#EA580C',
-    inactiveTintColor: '#9CA3AF',
-    badgeBackgroundColor: '#DC2626',
-    badgeTextColor: '#FFFFFF',
+    bar: '#FFFFFF',
+    glow: '#FB923C',
+    active: '#EA580C',
+    inactive: '#9CA3AF',
+    centerActive: '#EA580C',
+    centerInactive: '#9CA3AF',
+    centerIcon: '#FFFFFF',
+    badge: '#DC2626',
+    badgeText: '#FFFFFF',
+    sparkle: '#FFD700',
   },
 };
+
+/** Theme colors with any defined overrides applied on top. */
+export function resolveColors(
+  theme: TabBarThemeName | undefined,
+  overrides: Partial<TabBarColors> | undefined
+): TabBarColors {
+  const base = (theme && THEMES[theme]) || THEMES.ocean;
+  if (!overrides) return base;
+
+  const merged = { ...base };
+  (Object.keys(overrides) as (keyof TabBarColors)[]).forEach((key) => {
+    const value = overrides[key];
+    if (value !== undefined) merged[key] = value;
+  });
+  return merged;
+}

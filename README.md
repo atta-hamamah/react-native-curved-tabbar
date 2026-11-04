@@ -1,255 +1,297 @@
 # react-native-curved-tabbar
 
-A modern, highly customizable curved bottom tab bar for **React Navigation** (v6 & v7) featuring a smooth SVG cutout notch, an elevated floating center button (FAB), ambient radial glow, and animated sparkles.
+[![npm](https://img.shields.io/npm/v/react-native-curved-tabbar.svg)](https://www.npmjs.com/package/react-native-curved-tabbar)
+[![license](https://img.shields.io/npm/l/react-native-curved-tabbar.svg)](LICENSE)
 
-Works seamlessly on both **iOS** and **Android**, with support for **2, 4, or 6 tabs**.
+A curved bottom tab bar for [React Navigation](https://reactnavigation.org) with a notched, floating center button, ambient glow and animated sparkles.
 
----
+One line to use. Every part can be customized when you need it.
 
-## ✨ Features
+<p align="center">
+  <img src="docs/images/ocean.png" width="49%" alt="Ocean theme: white bar with a blue center home button" />
+  <img src="docs/images/dark.png" width="49%" alt="Dark theme: dark bar with a pink center button and sparkles on the Offers tab" />
+  <img src="docs/images/action.png" width="49%" alt="Emerald theme: action button with a plus icon between four tabs" />
+  <img src="docs/images/sunset.png" width="49%" alt="Sunset theme: orange center button, larger size with a wider notch" />
+</p>
 
-- 🎨 **SVG Cutout Notch:** Mathematical bezier curve notch that smoothly hugs an elevated center button.
-- 🌈 **360° Ambient Glow:** Radial gradient backdrop glow with customizable color (`shadowColor`) that won't clip on Android.
-- 🔀 **Flexible Tab Counts:** Dynamically splits any number of tabs symmetrically (e.g. 2, 4, 6 tabs) around the center notch.
-- 🌟 **Animated Sparkles & Micro-interactions:** Optional animated popping sparkle stars for special tabs or center button.
-- 🛡️ **Keyboard Friendly:** Automatically hides when the soft keyboard opens (`hideOnKeyboard: true`).
-- 🏷️ **Standard React Navigation API:** Works with existing `options.tabBarIcon`, `options.tabBarLabel`, and `options.tabBarBadge`.
-- 🦾 **Fully Typed:** Written in 100% TypeScript with comprehensive definitions.
+- **Works with what you already have.** Uses your screens' `tabBarIcon`, `tabBarLabel`, `tabBarBadge` and the rest of the standard options.
+- **Center button that fits.** The notch is computed from the button size, so changing one number keeps everything aligned.
+- **Two center modes.** Navigate to a tab, or run an action such as opening a modal, without switching tabs.
+- **Screens know its height.** `useBottomTabBarHeight()` returns the real height, so your content scrolls clear of the bar.
+- **Themes, glow and sparkles** built in, plus render slots to replace the background, the tabs or the sparkles.
+- iOS, Android and web. Fully typed.
 
----
+## Installation
 
-## 📦 Installation
-
-```bash
+```sh
 npm install react-native-curved-tabbar
 ```
 
-### Peer Dependencies
-Ensure you have the required peer dependencies installed:
+It needs `react-native-svg` and React Navigation's bottom tabs. Skip any you already have:
 
-```bash
-npm install react-native-svg react-native-safe-area-context @react-navigation/native @react-navigation/bottom-tabs
+```sh
+npm install react-native-svg @react-navigation/native @react-navigation/bottom-tabs react-native-safe-area-context react-native-screens
 ```
 
-If you are using bare React Native on iOS:
-```bash
-npx pod-install
-```
+With Expo, use `npx expo install` for those packages so you get versions that match your SDK. All of them work in Expo Go.
 
----
+## Quick start
 
-## 🚀 Quick Start (4 Tabs + Center Home Button)
+Pass `CurvedTabBar` as the navigator's `tabBar`:
 
 ```tsx
-import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { CurvedTabBar } from 'react-native-curved-tabbar';
-import { Ionicons } from '@expo/vector-icons'; // or react-native-vector-icons
-
-import HomeScreen from './screens/HomeScreen';
-import OffersScreen from './screens/OffersScreen';
-import CardsScreen from './screens/CardsScreen';
-import CartScreen from './screens/CartScreen';
-import MenuScreen from './screens/MenuScreen';
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
-export default function Navigation() {
+export function Tabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
-      tabBar={(props) => (
-        <CurvedTabBar
-          {...props}
-          centerRouteName="Home"
-          theme="ocean" // 'ocean' | 'dark' | 'emerald' | 'sunset'
-          showBarGlow={true}
-          showCenterGlow={true}
-        />
-      )}
-      screenOptions={{
-        headerShown: false,
-      }}
+      tabBar={(props) => <CurvedTabBar {...props} />}
+      screenOptions={{ headerShown: false }}
     >
       <Tab.Screen
         name="Offers"
         component={OffersScreen}
-        options={{
-          tabBarLabel: 'Offers',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="pricetag-outline" size={size} color={color} />
-          ),
-        }}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="pricetag-outline" size={size} color={color} /> }}
       />
       <Tab.Screen
         name="Cards"
         component={CardsScreen}
-        options={{
-          tabBarLabel: 'Cards',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="card-outline" size={size} color={color} />
-          ),
-        }}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="card-outline" size={size} color={color} /> }}
       />
-      {/* Center Home Route (Rendered in the elevated center notch) */}
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-        }}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} /> }}
       />
       <Tab.Screen
         name="Cart"
         component={CartScreen}
         options={{
-          tabBarLabel: 'Cart',
           tabBarBadge: 3,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="cart-outline" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="cart-outline" size={size} color={color} />,
         }}
       />
       <Tab.Screen
         name="Menu"
         component={MenuScreen}
-        options={{
-          tabBarLabel: 'Menu',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="menu-outline" size={size} color={color} />
-          ),
-        }}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="menu-outline" size={size} color={color} /> }}
       />
     </Tab.Navigator>
   );
 }
 ```
 
----
+With an odd number of tabs, the middle one (`Home` here) becomes the raised center button, using its own `tabBarIcon`. The others are split evenly to the left and right, in the order you declared them.
 
-## 🔢 Tab Counts Support
+## The center button
 
-The tab bar automatically splits all side tabs symmetrically around the center button:
-
-| Tab Count | Symmetrical Distribution |
-| :--- | :--- |
-| **2 Tabs** | 1 Tab (Left) + `[Center Button]` + 1 Tab (Right) |
-| **4 Tabs** | 2 Tabs (Left) + `[Center Button]` + 2 Tabs (Right) |
-| **6 Tabs** | 3 Tabs (Left) + `[Center Button]` + 3 Tabs (Right) |
-
----
-
-## ⚙️ Customization Props
-
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `theme` | `'ocean' \| 'dark' \| 'emerald' \| 'sunset' \| TabBarTheme` | `'ocean'` | Built-in theme preset or custom theme object. Individual color props override theme values. |
-| `centerRouteName` | `string` | `undefined` | The name of the route to place in the elevated center notch. |
-| `centerButton` | `CenterButtonConfig` | `undefined` | Configuration for Action FAB mode (`{ icon, onPress, size, activeColor, inactiveColor }`). |
-| `onPressCenterButton` | `(navigation) => void` | `undefined` | Custom action callback when center button is pressed. |
-| `renderCenterButton` | `(props) => ReactNode` | `DefaultHomeIcon` | Custom render function for the center button content. |
-| `renderBackground` | `(props) => ReactNode` | `undefined` | Custom render slot for the tab bar background surface (e.g., BlurView or Gradient). |
-| `renderTabItem` | `(props) => ReactNode` | `undefined` | Custom render slot for tab items. |
-| `enableSpringAnimation` | `boolean` | `true` | Enables native spring scale bounce micro-interaction on button tap. |
-| `barColor` | `string` | `'#FFFFFF'` | Background fill color of the curved tab bar. |
-| `shadowColor` | `string` | `'#33B8D2'` | Color of the radial ambient glow and aura backdrop. |
-| `centerButtonActiveColor` | `string` | `'#0072BB'` | Background color of center button when focused. |
-| `centerButtonInactiveColor` | `string` | `'#86A8BC'` | Background color of center button when unfocused. |
-| `centerButtonSize` | `number` | `66` | Diameter of the center floating button in points. |
-| `activeTintColor` | `string` | `'#0072BB'` | Active color for tab icons and text labels. |
-| `inactiveTintColor` | `string` | `'#86A8BC'` | Inactive color for tab icons and text labels. |
-| `height` | `number` | `75` | Height of the tab bar surface (excluding safe area insets). |
-| `cornerRadius` | `number` | `16` | Corner radius for the floating bar corners. |
-| `marginHorizontal` | `number` | `16` | Horizontal margin from screen edge. |
-| `cutoutRadius` | `number` | `44` | Horizontal radius of the notch cutout. |
-| `cutoutDepth` | `number` | `42` | Vertical depth of the notch cutout. |
-| `shoulderRadius` | `number` | `6` | Radius smoothing the transition into the cutout curve. |
-| `centerSpacingWidth` | `number` | `78` | Width of the center gap between left and right tabs. |
-| `showBarGlow` | `boolean` | `true` | Show ambient radial glow behind the bar. |
-| `showCenterGlow` | `boolean` | `true` | Show radial glow behind the center button. |
-| `showSparkles` | `boolean` | `false` | Enable animated star sparkles globally on all tabs and center button. |
-| `showCenterSparkles` | `boolean` | `false` | Enable sparkles specifically on the center button. |
-| `sparkleRouteNames` | `string \| string[]` | `undefined` | Route name or list of routes to display sparkles on (e.g. `['Offers', 'Cards']`). |
-| `renderSparkles` | `(props) => ReactNode` | `undefined` | Custom render function to replace default star sparkles with any custom component (e.g. Lottie, fire emoji, pulse badge). |
-| `sparkleComponent` | `ReactNode` | `undefined` | Custom static component to render instead of default star sparkles. |
-| `hideOnKeyboard` | `boolean` | `true` | Automatically hide the tab bar when the keyboard is open. |
-| `badgeBackgroundColor` | `string` | `'#FF6600'` | Background color of the badge indicator. |
-| `badgeTextColor` | `string` | `'#FFFFFF'` | Text color of the badge label. |
-| `labelStyle` | `TextStyle` | `undefined` | Custom style for tab item text labels. |
-| `activeLabelStyle` | `TextStyle` | `undefined` | Custom style for active tab item text labels. |
-
----
-
-## ✨ Controlling Sparkles & Custom Highlights
-
-You can control which tabs have sparkles in 3 different ways:
-
-### 1. Directly in `Tab.Screen` options (Recommended)
-Add `tabBarSparkle: true` directly to any screen's options:
+Use the `center` prop to choose what goes in the middle:
 
 ```tsx
-<Tab.Screen
-  name="Offers"
-  component={OffersScreen}
-  options={{
-    tabBarLabel: 'Offers',
-    tabBarSparkle: true, // That's it!
+// Default: with an odd number of tabs, the middle tab
+<CurvedTabBar {...props} />
+
+// A specific tab, wherever it is declared
+<CurvedTabBar {...props} center="Home" />
+
+// An action button that doesn't switch tabs (works with any number of tabs)
+<CurvedTabBar
+  {...props}
+  center={{
+    icon: ({ color, size }) => <Ionicons name="add" size={size} color={color} />,
+    onPress: () => openCreateSheet(),
   }}
 />
+
+// No center button and no notch: a plain floating bar
+<CurvedTabBar {...props} center={false} />
 ```
 
-### 2. Passing Route Names into `CurvedTabBar`
-Target a single route or multiple routes:
+To change the center button without picking a route, pass options without `route` or `onPress`. The middle tab is still used:
+
+```tsx
+<CurvedTabBar {...props} center={{ size: 74, sparkles: true, pressAnimation: false }} />
+```
+
+`onPress` receives the tab navigator's `navigation`, so an action button can also open a screen outside the tabs: `onPress: (navigation) => navigation.navigate('NewPost')`.
+
+If there is no center button and you didn't pass `center`, for example with 4 tabs, you get a warning in development. Pass `center={false}` to keep a plain bar and hide it.
+
+| `center` option | Type | Default | |
+| :--- | :--- | :--- | :--- |
+| `route` | `string` | middle tab (odd tab count) | Route the button navigates to. |
+| `onPress` | `(navigation) => void` | | Called instead of navigating. Without `route`, makes an action button. |
+| `icon` | `ReactNode \| ({ focused, color, size }) => ReactNode` | route's `tabBarIcon`, then a built-in icon | Icon inside the button. |
+| `size` | `number` | `66` | Diameter. The notch resizes to fit. |
+| `sparkles` | `boolean` | `false` | Animated sparkles on the button. |
+| `pressAnimation` | `boolean` | `true` | Spring scale when pressed. |
+| `accessibilityLabel` | `string` | route's label | |
+| `testID` | `string` | route's `tabBarButtonTestID` | |
+
+## Theming
+
+Pick a preset, then override any color:
+
+```tsx
+<CurvedTabBar {...props} theme="dark" />
+
+<CurvedTabBar {...props} theme="dark" colors={{ bar: '#000000', centerActive: '#22D3EE' }} />
+```
+
+Presets: `ocean` (default), `dark`, `emerald`, `sunset`. Each one is exported as `THEMES`, so you can build on it.
+
+| Color | Used for |
+| :--- | :--- |
+| `bar` | The bar fill |
+| `glow` | Glow behind the bar and the center button |
+| `active` / `inactive` | Tab icon and label |
+| `centerActive` / `centerInactive` | Center button when its tab is focused / not focused. Action buttons always use `centerActive`. |
+| `centerIcon` | Icon inside the center button |
+| `badge` / `badgeText` | Badges |
+| `sparkle` | Default sparkle stars |
+
+Screen options win over the theme, so `tabBarActiveTintColor`, `tabBarInactiveTintColor` and `tabBarBadgeStyle` keep working.
+
+## Sparkles
+
+List the tabs that should sparkle. This includes the center route:
+
+```tsx
+<CurvedTabBar {...props} sparkles={['Offers', 'Home']} />
+```
+
+To replace the stars with your own animation, use `renderSparkles`. It runs for every tab that has sparkles, so you can vary it by route:
 
 ```tsx
 <CurvedTabBar
   {...props}
-  sparkleRouteNames={['Offers', 'Cards']} // Targets both tabs!
+  sparkles={['Offers', 'Cart']}
+  renderSparkles={({ routeName, focused }) =>
+    routeName === 'Cart' ? <PulsingDot /> : <FireEmoji active={focused} />
+  }
 />
 ```
 
-### 3. Replacing Star Sparkles with Any Custom Component
-If you don't want to use our default star sparkles, pass your own custom animation (such as a fire badge, glowing dot, or Lottie animation):
+## Size, notch and glow
 
 ```tsx
 <CurvedTabBar
   {...props}
-  sparkleRouteNames={['Offers']}
-  renderSparkles={({ routeName, isFocused }) => (
-    <MyCustomPulsingFireBadge />
+  height={70}
+  cornerRadius={24}
+  marginHorizontal={12}
+  center={{ size: 60 }}
+  notch={{ gap: 8, depth: 30 }}   // shallower notch; the button rises to stay 8pt above its bottom
+  glow={{ bar: false }}           // or glow={false} to turn off both
+/>
+```
+
+| `notch` option | Default | |
+| :--- | :--- | :--- |
+| `gap` | `10` | Space between the button and the notch edge. |
+| `radius` | `size / 2 + gap` | Half-width of the notch. |
+| `depth` | `radius` | Depth of the notch. |
+| `shoulder` | `6` | Rounding where the bar's top edge meets the notch. |
+
+## Keeping content above the bar
+
+The bar floats over your screens. React Navigation's `useBottomTabBarHeight()` returns its real height, including the raised center button and the bottom safe area:
+
+```tsx
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+
+function OffersScreen() {
+  const tabBarHeight = useBottomTabBarHeight();
+  return <ScrollView contentContainerStyle={{ paddingBottom: tabBarHeight }}>{/* ... */}</ScrollView>;
+}
+```
+
+## Full customization
+
+When the props aren't enough, replace parts of the bar. Each render function receives everything the default implementation uses.
+
+```tsx
+import { CurvedBackground, TabBarItem } from 'react-native-curved-tabbar';
+
+<CurvedTabBar
+  {...props}
+  // The bar surface. `path` is the SVG outline, notch included, so you can clip or mask with it.
+  renderBackground={(bg) => (
+    <>
+      <CurvedBackground {...bg} />
+      <MyShineOverlay width={bg.width} height={bg.height} path={bg.path} />
+    </>
+  )}
+  // Each side tab. `onPress` and `onLongPress` already handle navigation and tab events.
+  renderTabItem={(tab) => (
+    <View style={{ flex: 1 }}>
+      <TabBarItem {...tab} />
+      {tab.focused && <ActiveDot color={tab.color} />}
+    </View>
   )}
 />
 ```
 
-Or customize it per-screen:
-```tsx
-<Tab.Screen
-  name="Offers"
-  options={{
-    tabBarSparkle: true,
-    tabBarSparkleComponent: <MyCustomFlameIcon />,
-  }}
-/>
-```
+## React Navigation options it respects
 
----
+`tabBarIcon`, `tabBarLabel` (string or function), `title`, `tabBarBadge`, `tabBarBadgeStyle`, `tabBarActiveTintColor`, `tabBarInactiveTintColor`, `tabBarLabelStyle`, `tabBarIconStyle`, `tabBarShowLabel`, `tabBarLabelVisibilityMode: 'unlabeled'`, `tabBarAccessibilityLabel` and `tabBarButtonTestID`. It also emits `tabPress` and `tabLongPress`, so `e.preventDefault()` and scroll-to-top on a second press work as usual.
 
-## 🎮 Interactive Example Playground
+## All props
 
-An interactive showcase app is included in the [`example/`](file:///c:/Users/Uniparticle/.gemini/antigravity-ide/scratch/react-native-curved-tabbar/example) directory. It features live theme cycling, ambient glow toggles, animated sparkle controls, notch dimension sliders, and live cart badge testing.
+`CurvedTabBar` takes the props React Navigation passes to `tabBar`, plus:
 
-To run the playground:
+| Prop | Type | Default |
+| :--- | :--- | :--- |
+| `theme` | `'ocean' \| 'dark' \| 'emerald' \| 'sunset'` | `'ocean'` |
+| `colors` | `Partial<TabBarColors>` | |
+| `center` | `string \| CenterButtonOptions \| false` | middle tab |
+| `sparkles` | `string \| string[]` | |
+| `glow` | `boolean \| { bar?: boolean; center?: boolean }` | `true` |
+| `notch` | `NotchOptions` | fits the center button |
+| `height` | `number` | `75` |
+| `cornerRadius` | `number` | `16` |
+| `marginHorizontal` | `number` | `16` |
+| `hideOnKeyboard` | `boolean` | `true` |
+| `style` | `StyleProp<ViewStyle>` | |
+| `renderBackground` | `(props: TabBarBackgroundProps) => ReactNode` | |
+| `renderTabItem` | `(props: TabItemProps) => ReactNode` | |
+| `renderSparkles` | `(props: SparkleRenderProps) => ReactNode` | |
 
-```bash
-cd example
+All of these types are exported.
+
+## Requirements
+
+- React Native 0.71 or newer
+- React Navigation 7 (6 should work too, but only 7 is tested so far)
+- `react-native-svg` 12 or newer
+
+## Example app
+
+The [`example/`](example) folder has an Expo app where you can switch themes, center modes, sparkles and notch sizes live. It loads the library straight from `src/`, so your edits show up on reload.
+
+```sh
+git clone https://github.com/atta-hamamah/react-native-curved-tabbar.git
+cd react-native-curved-tabbar/example
+npm install
 npm start
 ```
 
-- Press **`w`** in the terminal to test immediately in the web browser.
-- Or scan the QR code with **Expo Go** on your iOS or Android phone.
+Press `w` for the web, or scan the QR code with Expo Go.
 
----
+## Contributing
 
-## 📄 License
+```sh
+npm install
+npm run typecheck
+npm test
+```
 
-MIT © [Open Source](LICENSE)
+Issues and pull requests are welcome.
+
+## License
+
+[MIT](LICENSE)

@@ -1,321 +1,218 @@
-import React from 'react';
-import { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import type * as React from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
+import type {
+  BottomTabBarProps,
+  BottomTabNavigationOptions,
+} from '@react-navigation/bottom-tabs';
 
-export interface TabBarTheme {
-  barColor: string;
-  shadowColor: string;
-  centerButtonActiveColor: string;
-  centerButtonInactiveColor: string;
-  activeTintColor: string;
-  inactiveTintColor: string;
-  badgeBackgroundColor: string;
-  badgeTextColor: string;
+export type TabBarThemeName = 'ocean' | 'dark' | 'emerald' | 'sunset';
+
+export interface TabBarColors {
+  /** Fill color of the bar. */
+  bar: string;
+  /** Color of the ambient glow behind the bar and the center button. */
+  glow: string;
+  /** Icon and label color of the focused tab. */
+  active: string;
+  /** Icon and label color of unfocused tabs. */
+  inactive: string;
+  /** Center button background when its route is focused (always used for action buttons). */
+  centerActive: string;
+  /** Center button background when its route is not focused. */
+  centerInactive: string;
+  /** Icon color inside the center button. */
+  centerIcon: string;
+  /** Badge background. */
+  badge: string;
+  /** Badge text. */
+  badgeText: string;
+  /** Fill color of the default sparkle stars. */
+  sparkle: string;
 }
 
-export type TabBarPresetTheme = 'ocean' | 'dark' | 'emerald' | 'sunset' | 'default';
-
-export interface CenterButtonProps {
-  isFocused: boolean;
+export interface CenterIconProps {
+  focused: boolean;
   color: string;
   size: number;
 }
 
-export interface SparkleProps {
-  routeName?: string;
-  isFocused: boolean;
-  isCenter?: boolean;
-}
-
-export interface CenterButtonConfig {
+export interface CenterButtonOptions {
   /**
-   * Custom icon element or render function for the center action button.
+   * Route the center button navigates to.
+   * Defaults to the middle tab when the number of tabs is odd.
    */
-  icon?: React.ReactNode | ((props: CenterButtonProps) => React.ReactNode);
+  route?: string;
 
   /**
-   * Action handler triggered on tap. When provided, turns the center button into an action FAB.
+   * Called instead of navigating. Without a `route`, this turns the center
+   * button into an action button (open a modal, camera, sheet, ...).
    */
-  onPress?: () => void;
+  onPress?: (navigation: BottomTabBarProps['navigation']) => void;
 
   /**
-   * Background color when active / pressed.
+   * Icon element or render function.
+   * Defaults to the center route's `tabBarIcon`, then a built-in icon.
    */
-  activeColor?: string;
+  icon?: React.ReactNode | ((props: CenterIconProps) => React.ReactNode);
 
   /**
-   * Background color when inactive.
-   */
-  inactiveColor?: string;
-
-  /**
-   * Diameter/size in points.
+   * Diameter in points. The notch resizes to fit.
+   * @default 66
    */
   size?: number;
 
   /**
-   * Whether to display sparkles on the center button.
+   * Show sparkles on the center button.
+   * @default false (or true when the center route is listed in `sparkles`)
    */
-  showSparkles?: boolean;
+  sparkles?: boolean;
 
   /**
-   * Custom component to render instead of default star sparkles on the center button.
+   * Spring scale animation when pressed.
+   * @default true
    */
-  sparkleComponent?: React.ReactNode;
+  pressAnimation?: boolean;
 
-  /**
-   * Custom render function for sparkles on the center button.
-   */
-  renderSparkles?: (props: SparkleProps) => React.ReactNode;
-
-  /**
-   * Accessibility label for screen readers.
-   */
+  /** Defaults to the center route's `tabBarAccessibilityLabel` or label. */
   accessibilityLabel?: string;
 
-  /**
-   * Test identifier.
-   */
+  /** Defaults to the center route's `tabBarButtonTestID`. */
   testID?: string;
+}
+
+export interface NotchOptions {
+  /**
+   * Space between the center button and the edge of the notch.
+   * @default 10
+   */
+  gap?: number;
+
+  /**
+   * Half-width of the notch.
+   * @default center button size / 2 + gap
+   */
+  radius?: number;
+
+  /**
+   * Depth of the notch. The center button moves so it stays `gap` above the bottom.
+   * @default radius
+   */
+  depth?: number;
+
+  /**
+   * Rounding where the top edge of the bar meets the notch.
+   * @default 6
+   */
+  shoulder?: number;
+}
+
+export interface GlowOptions {
+  /** @default true */
+  bar?: boolean;
+  /** @default true */
+  center?: boolean;
+}
+
+export interface SparkleRenderProps {
+  /** Route the sparkles belong to (undefined for an action center button). */
+  routeName?: string;
+  focused: boolean;
+  isCenter: boolean;
+  /** `colors.sparkle` from the active theme. */
+  color: string;
+}
+
+export interface TabBarBackgroundProps {
+  /** Width of the bar in points. */
+  width: number;
+  /** Height of the bar in points. */
+  height: number;
+  /** SVG path of the bar shape (including the notch), in a `width` x `height` box. */
+  path: string;
+  colors: TabBarColors;
+  /** Whether the bar glow is enabled. */
+  glow: boolean;
+}
+
+export type TabRoute = BottomTabBarProps['state']['routes'][number];
+
+export interface TabItemProps {
+  route: TabRoute;
+  options: BottomTabNavigationOptions;
+  focused: boolean;
+  /** Resolved icon/label color for the current state. */
+  color: string;
+  /** Resolved text label (`tabBarLabel` string, `title`, or route name). */
+  label: string;
+  badge?: number | string;
+  /** Whether this tab should show sparkles. */
+  sparkles: boolean;
+  colors: TabBarColors;
+  /** Navigates to the tab, emitting `tabPress` like the default tab bar. */
+  onPress: () => void;
+  /** Emits `tabLongPress`. */
+  onLongPress: () => void;
+  renderSparkles?: (props: SparkleRenderProps) => React.ReactNode;
 }
 
 export interface CurvedTabBarProps extends BottomTabBarProps {
   /**
-   * Preset color theme ('ocean' | 'dark' | 'emerald' | 'sunset' | 'default')
-   * or a custom theme object with color overrides.
-   * Individual color props (`barColor`, `shadowColor`, etc.) take precedence over theme values.
+   * Built-in color preset.
+   * @default 'ocean'
    */
-  theme?: TabBarPresetTheme | Partial<TabBarTheme>;
+  theme?: TabBarThemeName;
+
+  /** Override any color from the theme. */
+  colors?: Partial<TabBarColors>;
 
   /**
-   * The route name that should be rendered in the center elevated button notch.
-   * If provided, that route is extracted from `state.routes` and rendered in the center.
-   * The remaining routes are split symmetrically to the left and right.
+   * The center button.
+   * - omitted: the middle tab becomes the center button (when the tab count is odd)
+   * - `'Home'`: use that route
+   * - `{ icon, onPress }`: an action button that doesn't change tabs
+   * - `false`: no center button and no notch
    */
-  centerRouteName?: string;
+  center?: string | CenterButtonOptions | false;
+
+  /** Route name(s) that show animated sparkles, e.g. `['Offers']`. */
+  sparkles?: string | string[];
 
   /**
-   * Configuration for the center button (Action FAB mode or custom icon/action).
-   */
-  centerButton?: CenterButtonConfig;
-
-  /**
-   * Custom callback triggered when the center button is pressed.
-   * If not provided, default React Navigation navigation/tabPress logic is triggered.
-   */
-  onPressCenterButton?: (navigation: BottomTabBarProps['navigation']) => void;
-
-  /**
-   * Custom render function for the center button content (icon/label).
-   */
-  renderCenterButton?: (props: CenterButtonProps) => React.ReactNode;
-
-  /**
-   * Optional custom render slot for the tab bar background surface (e.g. BlurView, Gradient).
-   */
-  renderBackground?: (props: TabBarBackgroundProps) => React.ReactNode;
-
-  /**
-   * Optional custom render slot for individual tab bar items.
-   */
-  renderTabItem?: (props: TabItemProps) => React.ReactNode;
-
-  /**
-   * Whether to enable the smooth native spring scale bounce micro-interaction on the center button.
+   * Ambient glow. `false` turns it off; `{ bar, center }` controls each one.
    * @default true
    */
-  enableSpringAnimation?: boolean;
+  glow?: boolean | GlowOptions;
+
+  /** Fine-tune the notch. By default it fits the center button automatically. */
+  notch?: NotchOptions;
 
   /**
-   * Background color of the tab bar SVG surface.
-   * @default '#FFFFFF'
-   */
-  barColor?: string;
-
-  /**
-   * Shadow & ambient glow aura color.
-   * @default '#33B8D2'
-   */
-  shadowColor?: string;
-
-  /**
-   * Background color of the center elevated button in active/focused state.
-   * @default '#0072BB'
-   */
-  centerButtonActiveColor?: string;
-
-  /**
-   * Background color of the center elevated button in inactive state.
-   * @default '#86A8BC'
-   */
-  centerButtonInactiveColor?: string;
-
-  /**
-   * Diameter/size of the circular center button in points.
-   * @default 66
-   */
-  centerButtonSize?: number;
-
-  /**
-   * Active tint color for tab labels and icons.
-   * @default '#0072BB'
-   */
-  activeTintColor?: string;
-
-  /**
-   * Inactive tint color for tab labels and icons.
-   * @default '#86A8BC'
-   */
-  inactiveTintColor?: string;
-
-  /**
-   * Height of the main tab bar container (excluding bottom insets).
+   * Height of the bar, not counting the safe-area spacing below it.
    * @default 75
    */
   height?: number;
 
-  /**
-   * Corner radius for the floating tab bar edges.
-   * @default 16
-   */
+  /** @default 16 */
   cornerRadius?: number;
 
-  /**
-   * Horizontal margin from the screen edges.
-   * @default 16
-   */
+  /** @default 16 */
   marginHorizontal?: number;
 
   /**
-   * Horizontal radius (half-width) of the curve notch cutout.
-   * @default 44
-   */
-  cutoutRadius?: number;
-
-  /**
-   * Vertical radius (depth) of the curve notch cutout.
-   * @default 42
-   */
-  cutoutDepth?: number;
-
-  /**
-   * Shoulder radius smoothing the transition from the top edge into the cutout.
-   * @default 6
-   */
-  shoulderRadius?: number;
-
-  /**
-   * Width of the center spacer separating left and right tabs around the center button.
-   * @default 78
-   */
-  centerSpacingWidth?: number;
-
-  /**
-   * Whether to display the 360-degree ambient radial glow around the bar.
-   * @default true
-   */
-  showBarGlow?: boolean;
-
-  /**
-   * Whether to display the radial glow behind the center floating button.
-   * @default true
-   */
-  showCenterGlow?: boolean;
-
-  /**
-   * Whether to display animated sparkles globally on all tabs and center button.
-   * @default false
-   */
-  showSparkles?: boolean;
-
-  /**
-   * Whether to display animated sparkles specifically on the center button.
-   * @default false
-   */
-  showCenterSparkles?: boolean;
-
-  /**
-   * Optional route name on which to show animated sparkles (e.g., for 'Offers').
-   */
-  sparkleRouteName?: string;
-
-  /**
-   * Single route name or array of route names on which to show animated sparkles.
-   * Example: `sparkleRouteNames={['Offers', 'Cart']}`
-   * You can also set `options={{ tabBarSparkle: true }}` directly on any Tab.Screen!
-   */
-  sparkleRouteNames?: string | string[];
-
-  /**
-   * Custom render function to replace the default star sparkles with any custom component
-   * (e.g., custom badge, Lottie animation, fire icon, pulse ring, etc.).
-   */
-  renderSparkles?: (props: SparkleProps) => React.ReactNode;
-
-  /**
-   * Custom static component to render instead of default star sparkles.
-   */
-  sparkleComponent?: React.ReactNode;
-
-  /**
-   * Whether to hide the tab bar when the software keyboard appears (iOS & Android).
+   * Hide the tab bar while the keyboard is open.
    * @default true
    */
   hideOnKeyboard?: boolean;
 
-  /**
-   * Background color for notification/cart badge circles.
-   * @default '#FF6600'
-   */
-  badgeBackgroundColor?: string;
-
-  /**
-   * Text color for badge labels.
-   * @default '#FFFFFF'
-   */
-  badgeTextColor?: string;
-
-  /**
-   * Custom style for inactive tab labels.
-   */
-  labelStyle?: StyleProp<TextStyle>;
-
-  /**
-   * Custom style for active tab labels.
-   */
-  activeLabelStyle?: StyleProp<TextStyle>;
-
-  /**
-   * Custom container style.
-   */
+  /** Style for the bar container. */
   style?: StyleProp<ViewStyle>;
-}
 
-export interface TabBarBackgroundProps {
-  barWidth: number;
-  height: number;
-  svgWidth: number;
-  svgHeight: number;
-  pad: number;
-  topY: number;
-  path: string;
-  barColor: string;
-  shadowColor: string;
-  showBarGlow: boolean;
-}
+  /** Replace the bar surface (e.g. a blur or gradient). */
+  renderBackground?: (props: TabBarBackgroundProps) => React.ReactNode;
 
-export interface TabItemProps {
-  route: BottomTabBarProps['state']['routes'][number];
-  isFocused: boolean;
-  navigation: BottomTabBarProps['navigation'];
-  options: BottomTabBarProps['descriptors'][string]['options'];
-  activeTintColor: string;
-  inactiveTintColor: string;
-  badgeBackgroundColor: string;
-  badgeTextColor: string;
-  showSparkles?: boolean;
-  renderSparkles?: (props: SparkleProps) => React.ReactNode;
-  sparkleComponent?: React.ReactNode;
-  labelStyle?: StyleProp<TextStyle>;
-  activeLabelStyle?: StyleProp<TextStyle>;
+  /** Replace each side tab. Give your element `flex: 1` to keep even spacing. */
+  renderTabItem?: (props: TabItemProps) => React.ReactNode;
+
+  /** Replace the default sparkle stars everywhere they appear. */
+  renderSparkles?: (props: SparkleRenderProps) => React.ReactNode;
 }

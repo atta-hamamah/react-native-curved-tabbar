@@ -3,7 +3,7 @@
     "target": "es2018",
     "module": "commonjs",
     "lib": ["es2018"],
-    "jsx": "react-native",
+    "jsx": "react-jsx",
     "declaration": true,
     "declarationMap": true,
     "outDir": "./lib",
